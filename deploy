@@ -1,0 +1,2 @@
+#!/bin/sh
+rsync -av ./ u95977059@access766628204.webspace-data.io:~/geolocserver --include=public/.htaccess --include=public/build --include=vendor --exclude-from=.gitignore --exclude=".*"
