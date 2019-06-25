@@ -1,9 +1,6 @@
 <?php
 
-
 namespace App\Controller;
-
-
 
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -12,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 
 class UserController extends AbstractController
@@ -30,19 +28,19 @@ class UserController extends AbstractController
         $this->repository = $repository;
         $this->em = $em;
     }
-
     /**
      * @Route("/connexion", name="user.connexion")
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
      * @return Response
      */
-    public function connexion(Request $request): Response
+    public function connexion(Request $request, UserPasswordEncoderInterface $encoder ): Response
     {
-//        $request = Request::create(
-//            '/inscription',
-//            'POST',
-//            ['mail' => 'admin@gmail.com' , 'password' => 'admin']
-//        );
-
+        $request = Request::create(
+            '/inscription',
+            'POST',
+            ['mail' => 'anonymous@gmail.com' , 'password' => 'anonymous']
+        );
         $data = array();
         $mail = $request->request->get('mail');
         $password = $request->request->get('password');
@@ -54,39 +52,41 @@ class UserController extends AbstractController
             {
                 $data['result'] = 'UnknowMail';
                 $response = new Response(json_encode($data));
-                $response->headers->set('Content-Type', 'application/json');
-                $response->headers->set('Access-Control-Allow-Origin', '*');
+//                $response->headers->set('Content-Type', 'application/json');
+//                $response->headers->set('Access-Control-Allow-Origin', '*');
                 return $response;
-
             } else // $mail existe dans la DB
             {
-                if($password == $user[0]->getPassword()) // Le password est bon
+                if($encoder->isPasswordValid($user[0], $password)) // Le password est bon
                 {
                     $data['result'] = 'Success';
                     $data['name'] = $user[0]->getName();
                     $response = new Response(json_encode($data));
-                    $response->headers->set('Content-Type', 'application/json');
-                    $response->headers->set('Access-Control-Allow-Origin', '*');
                     return $response;
                 } else  // Password incorrect
                 {
                     $data['result'] = 'WrongPassword';
                     $response = new Response(json_encode($data));
-                    $response->headers->set('Content-Type', 'application/json');
-                    $response->headers->set('Access-Control-Allow-Origin', '*');
                     return $response;
                 }
             }
         }
         return $this->render('base.html.twig');
     }
+
     /**
      * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
      * @return Response
      * @Route("/inscription", name="user.inscription")
      */
-    public function inscription(Request $request): Response
+    public function inscription(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
+        $request = Request::create(
+            '/inscription',
+            'POST',
+            ['name' => 'Anonymous' , 'mail' => 'anonymous@gmail.com' , 'password' => 'anonymous']
+        );
 
         $name = $request->request->get('name');
         $mail = $request->request->get('mail');
@@ -100,21 +100,18 @@ class UserController extends AbstractController
             if(empty($mailExist)) // Le mail n'existe pas
             {
                 $user = new User();
+                $encoded = $encoder->encodePassword($user, $password);
                 $user->setName($name)
-                    ->setPassword($password) // Cryptage Password
+                    ->setPassword($encoded) // Cryptage Password
                     ->setMail($mail);
                 $this->em->persist($user);
                 $this->em->flush();
                 $data['result'] = 'Success';
                 $response = new Response(json_encode($data));
-                $response->headers->set('Content-Type', 'application/json');
-                $response->headers->set('Access-Control-Allow-Origin', '*');
                 return $response;
             } else {
                 $data['result'] = 'WrongMail';
                 $response = new Response(json_encode($data));
-                $response->headers->set('Content-Type', 'application/json');
-                $response->headers->set('Access-Control-Allow-Origin', '*');
                 return $response;
             }
         }
