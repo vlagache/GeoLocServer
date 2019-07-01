@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Repository\FriendshipRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,50 +30,45 @@ class UserController extends AbstractController
         $this->repository = $repository;
         $this->em = $em;
     }
+
     /**
      * @Route("/connexion", name="user.connexion")
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
      * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function connexion(Request $request, UserPasswordEncoderInterface $encoder ): Response
     {
-        $request = Request::create(
-            '/inscription',
-            'POST',
-            ['mail' => 'anonymous@gmail.com' , 'password' => 'anonymous']
-        );
+//        $request = Request::create(
+//            '/inscription',
+//            'POST',
+//            ['mail' => 'admin@gmail.com' , 'password' => 'admin']
+//        );
         $data = array();
         $mail = $request->request->get('mail');
         $password = $request->request->get('password');
 
         if(isset($mail) && isset($password))
         {
-            $user = $this->repository->findUser($mail);
-            if(empty($user)) // Il n'existe aucun User avec $mail
+            $user = $this->repository->findUserByMail($mail);
+            if(!($user))
             {
                 $data['result'] = 'UnknowMail';
-                $response = new Response(json_encode($data));
-//                $response->headers->set('Content-Type', 'application/json');
-//                $response->headers->set('Access-Control-Allow-Origin', '*');
-                return $response;
-            } else // $mail existe dans la DB
+            } else
             {
-                if($encoder->isPasswordValid($user[0], $password)) // Le password est bon
+                if($encoder->isPasswordValid($user, $password)) // Le password est bon
                 {
                     $data['result'] = 'Success';
-                    $data['name'] = $user[0]->getName();
-                    $response = new Response(json_encode($data));
-                    return $response;
+                    $data['name'] = $user->getName();
+                    $data['userId'] = $user->getId();
                 } else  // Password incorrect
                 {
                     $data['result'] = 'WrongPassword';
-                    $response = new Response(json_encode($data));
-                    return $response;
                 }
             }
         }
-        return $this->render('base.html.twig');
+        return new JsonResponse($data);
     }
 
     /**
@@ -79,14 +76,15 @@ class UserController extends AbstractController
      * @param UserPasswordEncoderInterface $encoder
      * @return Response
      * @Route("/inscription", name="user.inscription")
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function inscription(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
-        $request = Request::create(
-            '/inscription',
-            'POST',
-            ['name' => 'Anonymous' , 'mail' => 'anonymous@gmail.com' , 'password' => 'anonymous']
-        );
+//        $request = Request::create(
+//            '/inscription',
+//            'POST',
+//            ['name' => 'Vincent' , 'mail' => 'test@gmail.com' , 'password' => 'admin']
+//        );
 
         $name = $request->request->get('name');
         $mail = $request->request->get('mail');
@@ -96,24 +94,45 @@ class UserController extends AbstractController
 
         if(isset($name) && isset($mail) && isset($password))
         {
-            $mailExist = $this->repository->mailExist($mail);
-            if(empty($mailExist)) // Le mail n'existe pas
+            $userExist = $this->repository->findUserByMail($mail);
+            if(!($userExist)) // Le mail n'existe pas
             {
                 $user = new User();
                 $encoded = $encoder->encodePassword($user, $password);
                 $user->setName($name)
-                    ->setPassword($encoded) // Cryptage Password
+                    ->setPassword($encoded)
                     ->setMail($mail);
                 $this->em->persist($user);
                 $this->em->flush();
                 $data['result'] = 'Success';
-                $response = new Response(json_encode($data));
-                return $response;
+                $data['userId'] = $user->getId();
             } else {
                 $data['result'] = 'WrongMail';
-                $response = new Response(json_encode($data));
-                return $response;
             }
         }
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/friends/{id}" , name="user.friends")
+     * @param $id
+     * @param FriendshipRepository $friendRepository
+     * @return Response
+     */
+    public function displayFriends($id, FriendshipRepository $friendRepository) : Response
+    {
+        $result = $friendRepository->findFriendsById($id);
+        dump($result);
+        return $this->render('base.html.twig');
+//        return new Response("Essai d'affichage des amis d'une personne");
+    }
+    /**
+     * @Route("/addFriends" , name="user.addFriends")
+     * @return Response
+     */
+    public function addFriends() : Response
+    {
+        // Essai d'ajout d'un ami
+        return new Response("Essai d'ajouter un ami");
     }
 }

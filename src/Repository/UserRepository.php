@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -22,30 +21,19 @@ class UserRepository extends ServiceEntityRepository
 
     /**
      * @param $mail
-     * @return User[]
+     * @return User|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function findUser($mail) :array
+    public function findUserByMail($mail) : ?User
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.mail = :mail')
             ->setParameter('mail', $mail)
             ->getQuery()
-            ->getResult();
-    }
+            ->getOneOrNullResult()
+            ;
 
-    /**
-     * @param $mail
-     * @return User[]
-     */
-    public function mailExist($mail) :array
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.mail = :mail')
-            ->setParameter('mail', $mail)
-            ->getQuery()
-            ->getResult();
     }
-
     // /**
     //  * @return User[] Returns an array of User objects
     //  */
