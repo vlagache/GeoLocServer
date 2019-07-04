@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ActivityRepository")
@@ -18,19 +19,29 @@ class Activity
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="activity", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="activity", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false)
      */
     private $user;
-
     /**
      * @ORM\Column(type="date")
      */
-    private $Date;
+    private $date;
 
     /**
      * @ORM\Column(type="time")
      */
     private $time;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Position", mappedBy="activity", orphanRemoval=true)
+     */
+    private $positions;
+
+    public function __construct()
+    {
+        $this->positions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -42,7 +53,7 @@ class Activity
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
@@ -51,12 +62,12 @@ class Activity
 
     public function getDate(): ?\DateTimeInterface
     {
-        return $this->Date;
+        return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $Date): self
+    public function setDate(\DateTimeInterface $date): self
     {
-        $this->Date = $Date;
+        $this->date = $date;
 
         return $this;
     }
@@ -69,6 +80,37 @@ class Activity
     public function setTime(\DateTimeInterface $time): self
     {
         $this->time = $time;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Position[]
+     */
+    public function getPositions(): Collection
+    {
+        return $this->positions;
+    }
+
+    public function addPosition(Position $position): self
+    {
+        if (!$this->positions->contains($position)) {
+            $this->positions[] = $position;
+            $position->setActivity($this);
+        }
+
+        return $this;
+    }
+
+    public function removePosition(Position $position): self
+    {
+        if ($this->positions->contains($position)) {
+            $this->positions->removeElement($position);
+            // set the owning side to null (unless already changed)
+            if ($position->getActivity() === $this) {
+                $position->setActivity(null);
+            }
+        }
 
         return $this;
     }

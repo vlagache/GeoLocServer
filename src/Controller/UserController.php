@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Repository\FriendshipRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -80,11 +79,11 @@ class UserController extends AbstractController
      */
     public function inscription(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
-//        $request = Request::create(
-//            '/inscription',
-//            'POST',
-//            ['name' => 'Vincent' , 'mail' => 'test@gmail.com' , 'password' => 'admin']
-//        );
+        $request = Request::create(
+            '/inscription',
+            'POST',
+            ['name' => 'Vincent' , 'mail' => 'test@gmail.com' , 'password' => 'admin']
+        );
 
         $name = $request->request->get('name');
         $mail = $request->request->get('mail');
@@ -116,14 +115,11 @@ class UserController extends AbstractController
     /**
      * @Route("/friends/{id}" , name="user.friends")
      * @param $id
-     * @param FriendshipRepository $friendRepository
      * @return Response
      */
-    public function displayFriends($id, FriendshipRepository $friendRepository) : Response
+    public function displayFriends($id) : Response
     {
-        $result = $friendRepository->findFriendsById($id);
-        dump($result);
-        return $this->render('base.html.twig');
+
 //        return new Response("Essai d'affichage des amis d'une personne");
     }
     /**

@@ -5,7 +5,6 @@ namespace App\Controller;
 
 
 use App\Entity\Activity;
-use App\Repository\ActivityRepository;
 use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -22,19 +21,13 @@ class ActivityController extends AbstractController
      */
     private $userRepository;
     /**
-     * @var ActivityRepository
-     */
-    private $activityRepository;
-    /**
      * @var ObjectManager
      */
     private $em;
 
-    public function __construct(ObjectManager $em, UserRepository $userRepository, ActivityRepository
-    $activityRepository)
+    public function __construct(ObjectManager $em, UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
-        $this->activityRepository = $activityRepository;
         $this->em = $em;
     }
 
@@ -42,16 +35,15 @@ class ActivityController extends AbstractController
      * @Route("/activity/start/{id}" , name="start.activity")
      * @param $id
      * @return Response
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Exception
      */
     public function  startActivity($id) :Response
     {
         $data = array();
         $user = $this->userRepository->find($id);
-
-        if($user) // l'activité correspond a un utilisateur existant
+        if($user) // l'activité est lancé par un utilisateur qui existe.
         {
-            $activityExist = $this->activityRepository->findActivityByUserId($id);
+            $activityExist = $user->getActivity();
             if(!$activityExist)
             {
                 date_default_timezone_set('Europe/Paris');
@@ -68,5 +60,33 @@ class ActivityController extends AbstractController
             }
         }
         return new JsonResponse($data);
+//        return $this->render('base.html.twig');
+    }
+
+    /**
+     * @Route("/activity/delete/{id}" , name="delete.activity")
+     * @param $id
+     * @return Response
+     */
+    public function  deleteActivity($id) :Response
+    {
+        $data = array();
+        $user = $this->userRepository->find($id);
+        if($user)
+        {
+            $activity = $user->getActivity();
+
+            if($activity)
+            {
+                $this->em->remove($activity);
+                $this->em->flush();
+                $data['result'] = 'deleteActivity';
+            } else
+            {
+                 $data['result'] = 'activityDoesntExist';
+            }
+        }
+        return new JsonResponse($data);
+//        return $this->render('base.html.twig');
     }
 }

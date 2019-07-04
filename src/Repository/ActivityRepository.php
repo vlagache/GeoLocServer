@@ -18,22 +18,6 @@ class ActivityRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Activity::class);
     }
-
-    /**
-     * @param $id
-     * @return Activity|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function findActivityByUserId($id) :? Activity
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.user = :user')
-            ->setParameter('user', $id)
-            ->getQuery()
-            ->getOneOrNullResult()
-            ;
-    }
-
     // /**
     //  * @return Activity[] Returns an array of Activity objects
     //  */

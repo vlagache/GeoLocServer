@@ -2,9 +2,6 @@
 
 namespace App\Entity;
 
-
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -36,26 +33,9 @@ class User implements UserInterface
     private $mail;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Friendship", mappedBy="user")
-     */
-    private $friends;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Friendship", mappedBy="friend")
-     */
-    private $friendsWithMe;
-
-    /**
      * @ORM\OneToOne(targetEntity="App\Entity\Activity", mappedBy="user", cascade={"persist", "remove"})
      */
     private $activity;
-
-
-    public function __construct()
-    {
-        $this->friends = new ArrayCollection();
-        $this->friendsWithMe = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -150,80 +130,18 @@ class User implements UserInterface
         // TODO: Implement eraseCredentials() method.
     }
 
-    /**
-     * @return Collection|Friendship[]
-     */
-    public function getFriends(): Collection
-    {
-        return $this->friends;
-    }
-
-    public function addFriend(Friendship $friend): self
-    {
-        if (!$this->friends->contains($friend)) {
-            $this->friends[] = $friend;
-            $friend->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFriend(Friendship $friend): self
-    {
-        if ($this->friends->contains($friend)) {
-            $this->friends->removeElement($friend);
-            // set the owning side to null (unless already changed)
-            if ($friend->getUser() === $this) {
-                $friend->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Friendship[]
-     */
-    public function getFriendsWithMe(): Collection
-    {
-        return $this->friendsWithMe;
-    }
-
-    public function addFriendsWithMe(Friendship $friendsWithMe): self
-    {
-        if (!$this->friendsWithMe->contains($friendsWithMe)) {
-            $this->friendsWithMe[] = $friendsWithMe;
-            $friendsWithMe->setFriend($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFriendsWithMe(Friendship $friendsWithMe): self
-    {
-        if ($this->friendsWithMe->contains($friendsWithMe)) {
-            $this->friendsWithMe->removeElement($friendsWithMe);
-            // set the owning side to null (unless already changed)
-            if ($friendsWithMe->getFriend() === $this) {
-                $friendsWithMe->setFriend(null);
-            }
-        }
-        return $this;
-    }
-
     public function getActivity(): ?Activity
     {
         return $this->activity;
     }
 
-    public function setActivity(?Activity $activity): self
+    public function setActivity(Activity $activity): self
     {
         $this->activity = $activity;
 
-        // set (or unset) the owning side of the relation if necessary
-        $newUser = $activity === null ? null : $this;
-        if ($newUser !== $activity->getUser()) {
-            $activity->setUser($newUser);
+        // set the owning side of the relation if necessary
+        if ($this !== $activity->getUser()) {
+            $activity->setUser($this);
         }
 
         return $this;

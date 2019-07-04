@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20190701145001 extends AbstractMigration
+final class Version20190704154151 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,8 +22,8 @@ final class Version20190701145001 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE activity (id INT AUTO_INCREMENT NOT NULL, user_id INT DEFAULT NULL, date DATE NOT NULL, time TIME NOT NULL, UNIQUE INDEX UNIQ_AC74095AA76ED395 (user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
-        $this->addSql('ALTER TABLE activity ADD CONSTRAINT FK_AC74095AA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('CREATE TABLE position (id INT AUTO_INCREMENT NOT NULL, activity_id INT NOT NULL, time TIME NOT NULL, lat DOUBLE PRECISION NOT NULL, lng DOUBLE PRECISION NOT NULL, INDEX IDX_462CE4F581C06096 (activity_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('ALTER TABLE position ADD CONSTRAINT FK_462CE4F581C06096 FOREIGN KEY (activity_id) REFERENCES activity (id)');
     }
 
     public function down(Schema $schema) : void
@@ -31,6 +31,6 @@ final class Version20190701145001 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP TABLE activity');
+        $this->addSql('DROP TABLE position');
     }
 }
