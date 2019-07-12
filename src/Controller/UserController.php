@@ -53,7 +53,7 @@ class UserController extends AbstractController
             $user = $this->repository->findUserByMail($mail);
             if(!($user))
             {
-                $data['result'] = 'UnknowMail';
+                $data['result'] = 'UnknownMail';
             } else
             {
                 if($encoder->isPasswordValid($user, $password)) // Le password est bon
@@ -110,25 +110,5 @@ class UserController extends AbstractController
             }
         }
         return new JsonResponse($data);
-    }
-
-    /**
-     * @Route("/friends/{id}" , name="user.friends")
-     * @param $id
-     * @return Response
-     */
-    public function displayFriends($id) : Response
-    {
-
-//        return new Response("Essai d'affichage des amis d'une personne");
-    }
-    /**
-     * @Route("/addFriends" , name="user.addFriends")
-     * @return Response
-     */
-    public function addFriends() : Response
-    {
-        // Essai d'ajout d'un ami
-        return new Response("Essai d'ajouter un ami");
     }
 }

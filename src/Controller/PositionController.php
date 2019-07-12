@@ -63,9 +63,7 @@ class PositionController extends AbstractController
                 $data['result'] = 'PositionSave';
             }
         }
-//        return new JsonResponse($data);
         return new JsonResponse($data);
-
 //        return $this->render('base.html.twig');
 
     }
