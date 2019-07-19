@@ -103,15 +103,16 @@ class TeamController extends AbstractController
 //        );
         $data = array();
         $mail = $request->request->get('mail');
+        $idUserWhoAddFriend = $request->request->get('invitFrom');
         $team = $this->teamRepository->find($id);
-        $user = $this->userRepository->findUserByMail($mail);
+        $user = $this->userRepository->findUserByMail($mail); // Utilisateur à ajouter en ami
+        $userWhoAddFriend = $this->userRepository->find($idUserWhoAddFriend); // Utilisateur qui veut ajouter un ami
 
         if($team)
         {
             if($user) // Utilisateur inscrit
             {
                 $teams = $user->getTeams()->toArray(); // Array d'objet Team avec toutes les teams de l'utilisateur
-                dump($teams);
                 if(in_array($team, $teams)) // Est ce que l'utilisateur fait deja partie de la team ou on veut l'ajouter ?
                 {
                     $data['result'] = 'userAlreadyInTeam';
@@ -126,6 +127,13 @@ class TeamController extends AbstractController
             } else
             {
                 $data['result'] = 'unknownUser';
+                $to = $mail;
+                $subject = $userWhoAddFriend->getName(). 'souhaite vous rajouter dans son équipe [ GEOLOCAPP ]';
+                $message .= $userWhoAddFriend->getName(). "souhaite vous ajouter dans son équipe sur l'application GEOLOCAPP . Vous pouvez télécharger l'application ici : [ lien ]";
+                $headers = 'From: geolocsport@vincentlagache.com' . "\r\n" .
+                    'Reply-To: v1.lagache@gmail.com' . "\r\n" .
+                    'X-Mailer: PHP/' . phpversion();
+                mail($to, $subject, $message, $headers);
             }
         } else
         {
@@ -147,7 +155,7 @@ class TeamController extends AbstractController
 //        $request = Request::create(
 //            '/team/{id}/adduser',
 //            'POST',
-//            ['idUser' => '11']
+//            ['idUser' => '1']
 //
 //        );
         $data = array();
@@ -165,6 +173,13 @@ class TeamController extends AbstractController
                     $team->removeUser($user);
                     $this->em->flush();
                     $data['result'] = 'removeUser';
+
+                    $nbUsers = $team->getUser()->toArray();
+                    if ( count($nbUsers) == 0)
+                    {
+                        $this->em->remove($team);
+                        $this->em->flush();;
+                    }
                 }
             }
         }
@@ -190,7 +205,7 @@ class TeamController extends AbstractController
             if(count($teams) != 0 )
             {
 
-                $selectTeams .= "<option value=''> Choisir une équipe </option>" ;
+                $selectTeams .= "<option value='0' selected='selected'> Choisir une équipe </option>" ;
                 for($i=0; $i<count($teams); $i++) // Pour chacune des equipes de l'utilisateur
                 {
 
@@ -205,9 +220,14 @@ class TeamController extends AbstractController
 
                     for($j=0; $j<count($users); $j++)
                     {
-
                         $tableTeams .= "<tr id='deleteLine-". $teams[$i]->getId() . "-". $users[$j]->getId() . "'>";
-                        $tableTeams .= "<td class='user'>". $users[$j]->getName(). "</td>";
+                        if ( $user->getId() == $users[$j]->getId())
+                        {
+                            $myName = $user->getName() . '(moi)';
+                            $tableTeams .= "<td class='user'>". $myName ."</td>";
+                        } else {
+                            $tableTeams .= "<td class='user'>". $users[$j]->getName(). "</td>";
+                        }
                         $tableTeams .= "<td class='cross'><img src='img/delete_min.png' id='deleteFriend-".
                             $teams[$i]->getId
                             () . "-"

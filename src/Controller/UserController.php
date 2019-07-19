@@ -79,11 +79,11 @@ class UserController extends AbstractController
      */
     public function inscription(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
-        $request = Request::create(
-            '/inscription',
-            'POST',
-            ['name' => 'Vincent' , 'mail' => 'test@gmail.com' , 'password' => 'admin']
-        );
+//        $request = Request::create(
+//            '/inscription',
+//            'POST',
+//            ['name' => 'Vincent' , 'mail' => 'test@gmail.com' , 'password' => 'admin']
+//        );
 
         $name = $request->request->get('name');
         $mail = $request->request->get('mail');
