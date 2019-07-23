@@ -13,6 +13,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Kreait\Firebase;
+use Kreait\Firebase\Messaging\Notification;
+use Kreait\Firebase\Messaging\CloudMessage;
 
 class ActivityController extends AbstractController
 {
@@ -127,5 +130,25 @@ class ActivityController extends AbstractController
             }
         }
         return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/notification")
+     */
+    public function sendNotification() : Response
+    {
+
+        $firebase = (new Firebase\Factory())->create();
+        $messaging = $firebase->getMessaging();
+
+
+        $configFirebase = parse_ini_file('../config.ini');
+        $deviceToken = $configFirebase['deviceToken'];
+
+        $message = CloudMessage::withTarget('token', $deviceToken)
+            ->withNotification(Notification::create('Notification from Symfony', 'Test'));
+
+        $messaging->send($message);
+        return new Response("Notification");
     }
 }

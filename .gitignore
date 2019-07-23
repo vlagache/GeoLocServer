@@ -16,4 +16,8 @@
 ###> symfony/web-server-bundle ###
 /.web-server-pid
 ###< symfony/web-server-bundle ###
+
+
 deploy
+geolocsport-firebase-adminsdk-m7iad-42e1d9193b.json
+config.ini

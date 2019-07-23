@@ -7,6 +7,7 @@
         "ext-iconv": "*",
         "ext-json": "*",
         "fzaninotto/faker": "^1.8",
+        "kreait/firebase-bundle": "1.0",
         "nelmio/cors-bundle": "^1.5",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/apache-pack": "^1.0",
