@@ -5,6 +5,7 @@ namespace App\Controller;
 
 
 use App\Entity\Position;
+use App\Service\CheckActivity;
 use DateTime;
 use App\Repository\UserRepository;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -25,16 +26,21 @@ class PositionController extends AbstractController
      * @var UserRepository
      */
     private $repository;
+    /**
+     * @var CheckActivity
+     */
+    private $checkActivity;
 
-    public function __construct(UserRepository $repository, ObjectManager $em)
+    public function __construct(UserRepository $repository, ObjectManager $em, CheckActivity $checkActivity)
     {
         $this->repository = $repository;
         $this->em = $em;
+        $this->checkActivity = $checkActivity;
     }
 
     /**
      * @Route("/position/{id}", name="positions.send")
-     * @param $id
+     * @param $id User
      * @param Request $request
      * @return Response
      * @throws \Exception
@@ -50,6 +56,7 @@ class PositionController extends AbstractController
         if($user) // La position est est envoyé par un utilisateur qui existe.
         {
             $activity = $user->getActivity();
+//            $checkActivity = $this->checkActivity;
             if($activity)
             {
                 date_default_timezone_set('Europe/Paris');
@@ -61,6 +68,14 @@ class PositionController extends AbstractController
                 $this->em->persist($position);
                 $this->em->flush();
                 $data['result'] = 'PositionSave';
+
+//                $checkActivity->setActivity($activity);
+//                if($checkActivity->isValid()) {
+//                    $data['result'] = 'PositionSave';
+//                } else {
+//                    $checkActivity->sendNotification();
+//                    $data['result'] = 'Errors';
+//                }
             }
         }
         return new JsonResponse($data);

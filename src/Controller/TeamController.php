@@ -195,60 +195,13 @@ class TeamController extends AbstractController
      */
     public function verifyIfYouHaveATeam($id) : Response
     {
-        $tableTeams = "";
-        $selectTeams = "";
         $user = $this->userRepository->find($id);
-        if($user)
-        {
+        if ($user) {
             $teams = $user->getTeams()->toArray(); // Array d'objet Team avec toutes les teams de l'utilisateur
-
-            if(count($teams) != 0 )
-            {
-
-                $selectTeams .= "<option value='0' selected='selected'> Choisir une équipe </option>" ;
-                for($i=0; $i<count($teams); $i++) // Pour chacune des equipes de l'utilisateur
-                {
-
-                    $selectTeams .= "<option value=". $teams[$i]->getId() . ">" . $teams[$i]->getName() . "</option>" ;
-
-                    $tableTeams .= "<div id='listTeams'>";
-                    $tableTeams .= "<div class='nameTeam'>" . $teams[$i]->getName() . "</div>";
-                    $tableTeams .= "<table data-role='table' id='table-column-toggle' data-mode='columntoggle' class='ui-responsive table-stroke'>";
-                    $tableTeams .= "<tbody id=team". $teams[$i]->getId().">";
-
-                    $users = $teams[$i]->getUser()->toArray(); // Tableau d'objet User
-
-                    for($j=0; $j<count($users); $j++)
-                    {
-                        $tableTeams .= "<tr id='deleteLine-". $teams[$i]->getId() . "-". $users[$j]->getId() . "'>";
-                        if ( $user->getId() == $users[$j]->getId())
-                        {
-                            $myName = $user->getName() . '(moi)';
-                            $tableTeams .= "<td class='user'>". $myName ."</td>";
-                        } else {
-                            $tableTeams .= "<td class='user'>". $users[$j]->getName(). "</td>";
-                        }
-                        $tableTeams .= "<td class='cross'><img src='img/delete_min.png' id='deleteFriend-".
-                            $teams[$i]->getId
-                            () . "-"
-                            .$users[$j]->getId()."' class='imgDelete'/></td>";
-                        $tableTeams .= "</tr>";
-
-                    }
-                    $tableTeams .= "</tbody>";
-                    $tableTeams .= "</table>";
-                    $tableTeams .= "</div>";
-
-                }
-            } else {
-                $tableTeams .= "<div id='listTeams'>";
-                $tableTeams .= "Vous n'avez aucune équipe";
-                $tableTeams .= "</div>";
-
-            }
-            $tableTeams .= $selectTeams;
+            return $this->render('teamstable.html.twig', [
+                'teams' => $teams,
+                'userIdWhoAskDisplay' => $id
+            ]);
         }
-         return new Response($tableTeams);
     }
-
 }

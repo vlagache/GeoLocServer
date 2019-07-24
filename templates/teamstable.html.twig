@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'Tableau des équipes' %}
+{% block body %}
+    {% if teams|length != 0 %}
+        <div id="listTeams">
+        {% for team in teams %}
+            <div class="nameTeam">{{ team.name }}</div>
+            <table data-role='table' id='table-column-toggle' data-mode='columntoggle' class='ui-responsive table-stroke'>
+                <tbody id="team{{ team.id }}">
+                {% for user in team.user %}
+                    <tr id="deleteLine-{{ team.id }}-{{ user.id }}">
+                        <td class="user">
+                            {% if userIdWhoAskDisplay == user.id %}
+                            {{ user.name }} ( moi )
+                            {% else %}
+                            {{ user.name }}
+                            {% endif %}
+                        </td>
+                        <td class="cross"><img src="img/delete_min.png" id="deleteFriend-{{ team.id }}-{{ user.id }}" class="imgDelete"/></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endfor %}
+        </div>
+
+        <option value='0' selected='selected'> Choisir une équipe </option>
+        {% for team in teams %}
+            <option value='{{ team.id }}'>{{ team.name }}</option>
+        {% endfor %}
+
+    {% else %}
+        <div id="listTeams"> Vous n'avez aucune équipe</div>
+    {% endif %}
+
+{% endblock %}

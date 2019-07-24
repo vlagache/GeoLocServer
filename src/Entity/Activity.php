@@ -35,6 +35,7 @@ class Activity
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Position", mappedBy="activity", orphanRemoval=true)
+     * @ORM\OrderBy({"id" = "DESC"})
      */
     private $positions;
 
