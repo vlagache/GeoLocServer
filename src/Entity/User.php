@@ -44,6 +44,12 @@ class User implements UserInterface
      */
     private $teams;
 
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Device", mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $device;
+
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
@@ -186,4 +192,22 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function getDevice(): ?Device
+    {
+        return $this->device;
+    }
+
+    public function setDevice(Device $device): self
+    {
+        $this->device = $device;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $device->getUser()) {
+            $device->setUser($this);
+        }
+
+        return $this;
+    }
+
 }

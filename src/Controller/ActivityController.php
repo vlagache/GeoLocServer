@@ -7,15 +7,14 @@ namespace App\Controller;
 use App\Entity\Activity;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\SendNotification;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Kreait\Firebase;
-use Kreait\Firebase\Messaging\Notification;
-use Kreait\Firebase\Messaging\CloudMessage;
+
 
 class ActivityController extends AbstractController
 {
@@ -28,11 +27,16 @@ class ActivityController extends AbstractController
      * @var ObjectManager
      */
     private $em;
+    /**
+     * @var SendNotification
+     */
+    private $notification;
 
-    public function __construct(ObjectManager $em, UserRepository $userRepository)
+    public function __construct(ObjectManager $em, UserRepository $userRepository, SendNotification $notification)
     {
         $this->userRepository = $userRepository;
         $this->em = $em;
+        $this->notification = $notification;
     }
 
     /**
@@ -44,7 +48,8 @@ class ActivityController extends AbstractController
     public function  startActivity($id) :Response
     {
         $data = array();
-        $activityStart = false;
+        $notification = $this->notification;
+        $activityCanStart = false;
         $user = $this->userRepository->find($id);
         if($user) // l'activité est lancé par un utilisateur qui existe.
         {
@@ -59,12 +64,12 @@ class ActivityController extends AbstractController
                     $users = $teams[$i]->getUser()->toArray(); // Tableau d'objet User equipe $i , $i+1 , etc...
                     if( count($users) > 1 )
                     {
-                        $activityStart = true; // L'utilisateur a un ami ou plus dans une de ses équipes.
+                        $activityCanStart = true; // L'utilisateur a un ami ou plus dans une de ses équipes.
                     }
                 }
 
                 $activityExist = $user->getActivity();
-                if(!$activityExist && $activityStart) {
+                if(!$activityExist && $activityCanStart) {
                     date_default_timezone_set('Europe/Paris');
 
                     $activity = new Activity();
@@ -74,10 +79,16 @@ class ActivityController extends AbstractController
                     $this->em->persist($activity);
                     $this->em->flush();
                     $data['result'] = 'startActivity';
-                } else if(!$activityStart){
+                    $notification->setUser($user);
+                    $notification->setMessageActivityStart();
+                    $report = $notification->sendNotification();
+                } else if(!$activityCanStart){
                     $data['result'] = 'noFriendInYourTeam';
                 } else {
                     $data['result'] = 'activityExist';
+                    $notification->setUser($user);
+                    $notification->setMessageActivityRestart();
+                    $report = $notification->sendNotification();
                 }
             }
         }
@@ -93,6 +104,7 @@ class ActivityController extends AbstractController
     public function  deleteActivity($id) :Response
     {
         $data = array();
+        $notification = $this->notification;
         $user = $this->userRepository->find($id);
         if($user)
         {
@@ -103,6 +115,9 @@ class ActivityController extends AbstractController
                 $this->em->remove($activity);
                 $this->em->flush();
                 $data['result'] = 'deleteActivity';
+                $notification->setUser($user);
+                $notification->setMessageActivityEnd();
+                $report = $notification->sendNotification();
             } else
             {
                  $data['result'] = 'activityDoesntExist';
@@ -120,6 +135,7 @@ class ActivityController extends AbstractController
     public function verifyIfYouHaveAnActivity($id) :Response
     {
         $data = array();
+        $notification = $this->notification;
         $user = $this->userRepository->find($id);
         if($user)
         {
@@ -127,28 +143,13 @@ class ActivityController extends AbstractController
             if(!$activity)
             {
                 $data['result'] = 'activityDoesntExist';
+            } else
+            {
+                $notification->setUser($user);
+                $notification->setMessageActivityPause();
+                $report = $notification->sendNotification();
             }
         }
         return new JsonResponse($data);
-    }
-
-    /**
-     * @Route("/notification")
-     */
-    public function sendNotification() : Response
-    {
-
-        $firebase = (new Firebase\Factory())->create();
-        $messaging = $firebase->getMessaging();
-
-
-        $configFirebase = parse_ini_file('../config.ini');
-        $deviceToken = $configFirebase['deviceToken'];
-
-        $message = CloudMessage::withTarget('token', $deviceToken)
-            ->withNotification(Notification::create('Notification from Symfony', 'Test'));
-
-        $messaging->send($message);
-        return new Response("Notification");
     }
 }

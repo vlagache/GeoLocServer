@@ -88,7 +88,7 @@ class TeamController extends AbstractController
 
     /**
      * @Route("/team/{id}/adduser")
-     * @param $id Team id
+     * @param $id Team
      * @param Request $request
      * @return Response
      * @throws \Doctrine\ORM\NonUniqueResultException
@@ -146,7 +146,7 @@ class TeamController extends AbstractController
 
     /**
      * @Route("/team/{id}/deleteuser")
-     * @param $id Team Id
+     * @param $id Team
      * @param Request $request
      * @return Response
      */
@@ -190,18 +190,19 @@ class TeamController extends AbstractController
 
     /**
      * @Route("/team/{id}", name="display.team")
-     * @param $id User Id
+     * @param $id User
      * @return Response
      */
     public function verifyIfYouHaveATeam($id) : Response
     {
         $user = $this->userRepository->find($id);
         if ($user) {
-            $teams = $user->getTeams()->toArray(); // Array d'objet Team avec toutes les teams de l'utilisateur
+            $teams = $user->getTeams(); // Array d'objet Team avec toutes les teams de l'utilisateur
             return $this->render('teamstable.html.twig', [
                 'teams' => $teams,
                 'userIdWhoAskDisplay' => $id
             ]);
         }
+        return $this->render('base.html.twig');
     }
 }

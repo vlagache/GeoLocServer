@@ -34,9 +34,9 @@ class CheckActivity
     public function checkIfMove()
     {
         $positions = $this->activity->getPositions();
-        if(count($positions) < 2) return null;
-        if($position[1]->getLatLong() == $position[0]->getLatLong() ) return false;
-        return true;
+        if(count($positions) < 2) return null; // Demarrage pas de positions à comparer
+        if($position[1]->getLatLong() == $position[0]->getLatLong() ) return false; // Immobile
+        return true; // Mouvement
     }
     public function isValid()
     {

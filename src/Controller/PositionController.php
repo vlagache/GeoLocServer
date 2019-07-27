@@ -5,6 +5,7 @@ namespace App\Controller;
 
 
 use App\Entity\Position;
+use App\Entity\User;
 use App\Service\CheckActivity;
 use DateTime;
 use App\Repository\UserRepository;

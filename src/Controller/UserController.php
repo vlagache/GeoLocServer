@@ -82,7 +82,7 @@ class UserController extends AbstractController
 //        $request = Request::create(
 //            '/inscription',
 //            'POST',
-//            ['name' => 'Vincent' , 'mail' => 'test@gmail.com' , 'password' => 'admin']
+//            ['name' => 'Vincent' , 'mail' => 'xxx@gmail.com' , 'password' => 'test']
 //        );
 
         $name = $request->request->get('name');
