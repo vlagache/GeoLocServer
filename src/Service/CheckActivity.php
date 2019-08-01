@@ -6,7 +6,7 @@ namespace App\Service;
 
 use App\Entity\Activity;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager;
+
 
 class CheckActivity
 {
@@ -34,22 +34,25 @@ class CheckActivity
     public function checkIfMove()
     {
         $positions = $this->activity->getPositions();
-        if(count($positions) < 2) return null; // Demarrage pas de positions à comparer
-        if($position[1]->getLatLong() == $position[0]->getLatLong() ) return false; // Immobile
+        if(count($positions) < 2) return null; // Start pas de positions à comparer
+        if($positions[1]->getLat() == $positions[0]->getLat() && $positions[1]->getLng() == $positions[0]->getLng())return false;
         return true; // Mouvement
     }
     public function isValid()
     {
-        // if pause
-        return null;
 
-        $valid = 0;
-        // prendre toutes les positions
-        if($this->checkIfMove() == 1 or $this->checkIfMove() == null ) $valid = 1;
-
-        // verfier si c bon par position
+        if($this->activity->getPause() == 1 )
+        {
+            $valid = 1;
+        } else if($this->checkIfMove() == false)
+        {
+            $valid = 0;
+        } else { // checkIfMove() true or null
+            $valid = 1;
+        }
 
         return $valid;
+
     }
 
     public function sendNotification()

@@ -68,27 +68,36 @@ class ActivityController extends AbstractController
                     }
                 }
 
-                $activityExist = $user->getActivity();
+                $activityExist = $user->getActivity(); // Activité deja lancé
                 if(!$activityExist && $activityCanStart) {
                     date_default_timezone_set('Europe/Paris');
 
                     $activity = new Activity();
                     $activity->setUser($user)
                         ->setDate(new DateTime())
-                        ->setTime(new DateTime());
+                        ->setTime(new DateTime())
+                        ->setPause(false);
                     $this->em->persist($activity);
                     $this->em->flush();
                     $data['result'] = 'startActivity';
+
                     $notification->setUser($user);
-                    $notification->setMessageActivityStart();
+                    $notification->setActivity($activity);
+                    $notification->setMessage('start');
                     $report = $notification->sendNotification();
+
                 } else if(!$activityCanStart){
                     $data['result'] = 'noFriendInYourTeam';
+                } else if ($activityExist->getPause() == 1) {
+                    $data['result'] = 'activityRestart';
+                    $activityExist->setPause(false);
+                    $this->em->flush();
+
+                    $notification->setUser($user);
+                    $notification->setMessage('restart');
+                    $report = $notification->sendNotification();
                 } else {
                     $data['result'] = 'activityExist';
-                    $notification->setUser($user);
-                    $notification->setMessageActivityRestart();
-                    $report = $notification->sendNotification();
                 }
             }
         }
@@ -112,12 +121,13 @@ class ActivityController extends AbstractController
 
             if($activity)
             {
+                $notification->setUser($user);
+                $notification->setMessage('end');
+                $report = $notification->sendNotification();
+
                 $this->em->remove($activity);
                 $this->em->flush();
                 $data['result'] = 'deleteActivity';
-                $notification->setUser($user);
-                $notification->setMessageActivityEnd();
-                $report = $notification->sendNotification();
             } else
             {
                  $data['result'] = 'activityDoesntExist';
@@ -132,7 +142,7 @@ class ActivityController extends AbstractController
      * @param $id User id
      * @return Response
      */
-    public function verifyIfYouHaveAnActivity($id) :Response
+    public function pauseActivity($id) :Response
     {
         $data = array();
         $notification = $this->notification;
@@ -145,8 +155,12 @@ class ActivityController extends AbstractController
                 $data['result'] = 'activityDoesntExist';
             } else
             {
+                $data['result'] = "pauseActivity";
+                $activity->setPause(true);
+                $this->em->flush();
+
                 $notification->setUser($user);
-                $notification->setMessageActivityPause();
+                $notification->setMessage('pause');
                 $report = $notification->sendNotification();
             }
         }

@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Position;
 use App\Entity\User;
 use App\Service\CheckActivity;
+use App\Service\SendNotification;
 use DateTime;
 use App\Repository\UserRepository;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -31,12 +32,18 @@ class PositionController extends AbstractController
      * @var CheckActivity
      */
     private $checkActivity;
+    /**
+     * @var SendNotification
+     */
+    private $notification;
 
-    public function __construct(UserRepository $repository, ObjectManager $em, CheckActivity $checkActivity)
+    public function __construct(UserRepository $repository, ObjectManager $em, CheckActivity $checkActivity,
+                                SendNotification $notification)
     {
         $this->repository = $repository;
         $this->em = $em;
         $this->checkActivity = $checkActivity;
+        $this->notification = $notification;
     }
 
     /**
@@ -48,6 +55,7 @@ class PositionController extends AbstractController
      */
     public function sendPositions($id,Request $request) :Response
     {
+        $notification = $this->notification;
         $data = array();
         $lat = $request->request->get('latitude');
         $lng = $request->request->get('longitude');
@@ -57,7 +65,7 @@ class PositionController extends AbstractController
         if($user) // La position est est envoyé par un utilisateur qui existe.
         {
             $activity = $user->getActivity();
-//            $checkActivity = $this->checkActivity;
+            $checkActivity = $this->checkActivity;
             if($activity)
             {
                 date_default_timezone_set('Europe/Paris');
@@ -68,19 +76,26 @@ class PositionController extends AbstractController
                     ->setLng($lng);
                 $this->em->persist($position);
                 $this->em->flush();
-                $data['result'] = 'PositionSave';
 
-//                $checkActivity->setActivity($activity);
-//                if($checkActivity->isValid()) {
-//                    $data['result'] = 'PositionSave';
-//                } else {
-//                    $checkActivity->sendNotification();
-//                    $data['result'] = 'Errors';
-//                }
+                // QU'est ce qu'il se passe quand l'utilisateur est immobile ?
+                // Envoi d'une notification , mais les positions continuent d'etre sauvegardés...
+                // Envoyer des notifs et continuer à envoyer les positions
+
+                $checkActivity->setActivity($activity);
+                if($checkActivity->isValid()) {
+                    $data['result'] = 'PositionSave';
+                    $notification->setUser($user);
+                    $notification->setMessage('move');
+                    $report = $notification->sendNotification();
+                } else {
+                    $notification->setUser($user);
+                    $notification->setMessage('immobile');
+                    $report = $notification->sendNotification();
+                    $data['result'] = 'Errors';
+                }
             }
         }
         return new JsonResponse($data);
 //        return $this->render('base.html.twig');
-
     }
 }
