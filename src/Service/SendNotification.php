@@ -120,23 +120,23 @@ class SendNotification
         switch($stateOfActivity)
         {
             case "start":
-                $this->body = 'Votre ami ' . $this->user->getName() . ' a démarré une activité !';
+                $this->body = 'Votre ami ' . $this->user->getName() . ' a démarré une activité';
                 //
                 break;
             case "pause":
-                $this->body = 'Votre ami ' . $this->user->getName() . ' a mis en pause son activité !';
+                $this->body = 'Votre ami ' . $this->user->getName() . ' a mis en pause son activité';
                 break;
             case "end":
-                $this->body = 'Votre ami ' . $this->user->getName() . ' a arreté son activité !';
+                $this->body = 'Votre ami ' . $this->user->getName() . ' a arreté son activité';
                 break;
             case "restart":
-                $this->body = 'Votre ami ' . $this->user->getName() . ' a redémarré son activité ! ';
+                $this->body = 'Votre ami ' . $this->user->getName() . ' a redémarré son activité';
                 break;
             case "immobile":
-                $this->body = 'Votre ami ' . $this->user->getName() . ' est immobile ';
+                $this->body = 'Votre ami ' . $this->user->getName() . ' est immobile';
                 break;
             case "move":
-                $this->body = 'Votre ami ' . $this->user->getName() . ' bouge ! ';
+                $this->body = 'Votre ami ' . $this->user->getName() . ' bouge';
                 break;
         }
         $this->message = CloudMessage::new()

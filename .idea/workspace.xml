@@ -2,19 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="57f3183e-8e6a-43f0-83ee-7eecdd56a9cc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Controller/NotificationController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/Notification.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20190730111415.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20190730172944.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Repository/NotificationRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/notifications.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/ActivityController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ActivityController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/PositionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PositionController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Activity.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Activity.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/CheckActivity.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/CheckActivity.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/NotificationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/NotificationController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Service/SendNotification.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/SendNotification.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/teamstable.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/teamstable.html.twig" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -239,7 +230,7 @@
       <workItem from="1564242071708" duration="915000" />
       <workItem from="1564410683664" duration="7699000" />
       <workItem from="1564477267721" duration="20530000" />
-      <workItem from="1564555682651" duration="8856000" />
+      <workItem from="1564555682651" duration="23649000" />
     </task>
     <servers />
   </component>
