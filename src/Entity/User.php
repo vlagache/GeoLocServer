@@ -54,6 +54,11 @@ class User implements UserInterface
      */
     private $notifications;
 
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $inscription_date;
+
 
     public function __construct()
     {
@@ -243,6 +248,18 @@ class User implements UserInterface
                 $notification->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getInscriptionDate(): ?\DateTimeInterface
+    {
+        return $this->inscription_date;
+    }
+
+    public function setInscriptionDate(\DateTimeInterface $inscription_date): self
+    {
+        $this->inscription_date = $inscription_date;
 
         return $this;
     }
