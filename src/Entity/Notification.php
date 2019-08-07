@@ -18,7 +18,7 @@ class Notification
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activity", inversedBy="notifications")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $activity;
 
@@ -37,6 +37,11 @@ class Notification
      * @ORM\Column(type="text")
      */
     private $message;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $read_by_user;
 
     public function getId(): ?int
     {
@@ -87,6 +92,18 @@ class Notification
     public function setMessage(string $message): self
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    public function getReadByUser(): ?bool
+    {
+        return $this->read_by_user;
+    }
+
+    public function setReadByUser(bool $read_by_user): self
+    {
+        $this->read_by_user = $read_by_user;
 
         return $this;
     }

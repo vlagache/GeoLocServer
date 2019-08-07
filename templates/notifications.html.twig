@@ -1,16 +1,20 @@
 <div id="listNotifications">
-    {% for activity in activities %}
-        <div class="activityOf">
-                Activité de {{ activity.user.name }} - {{ activity.date|date('d/m/Y') }}
-        </div>
-                {% for notification in activity.notifications %}
-                        {% if notification.user.id == userIdWhoAskDisplay%}
-                        <div class="notificationContent">{{ notification.date|date('H:i:s') }} - {{ notification.message }}</div>
-                        {% endif %}
-                {% endfor %}
+    {% for key,notificationsByAct in notifications  %}
+        {% set activityUserName = "" %}
+        {% for notification in notificationsByAct %}
+            {% if notification.activity is null %}
+                <div id="endOfActivity"> Arret des activités </div>
+                <div class="notificationContent">le {{ notification.date|date('d/m/Y') }} à {{ notification.date|date('H:i:s') }} - {{ notification.message }}</div>
+            {% else  %}
+                {% if(notification.activity.user.name != activityUserName) %}
+                    <div class="activityOf">
+                        Activité de {{ notification.activity.user.name }} - {{ notification.activity.date|date('d/m/Y') }}
+                    </div>
+                    {% set activityUserName = notification.activity.user.name %}
+                {% endif %}
+                <div class="notificationContent">{{ notification.date|date('H:i:s') }} - {{ notification.message }}</div>
+            {% endif %}
+        {% endfor %}
     {% endfor %}
 </div>
-
-
-
 

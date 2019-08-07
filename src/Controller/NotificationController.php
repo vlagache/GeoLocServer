@@ -6,7 +6,9 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\ActivityRepository;
+use App\Repository\NotificationRepository;
 use App\Repository\UserRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,10 +25,22 @@ class NotificationController extends AbstractController
      */
     private $activityRepository;
 
-    public function __construct(UserRepository $userRepository, ActivityRepository $activityRepository)
+    /**
+     * @var NotificationRepository
+     */
+    private $notificationRepository;
+    /**
+     * @var ObjectManager
+     */
+    private $em;
+
+    public function __construct(UserRepository $userRepository, ActivityRepository $activityRepository,
+                                NotificationRepository $notificationRepository, ObjectManager $em)
     {
         $this->userRepository = $userRepository;
         $this->activityRepository = $activityRepository;
+        $this->notificationRepository = $notificationRepository;
+        $this->em = $em;
     }
     /**
      * @Route("/notification/number/{id}")
@@ -35,15 +49,14 @@ class NotificationController extends AbstractController
      */
     public function numberOfNotifications($id) :Response
     {
-        $data = array();
-        $user = $this->userRepository->find($id);
-        $notifications = $user->getNotifications();
-        $nbOfNotifications = count($notifications);
 
-        $data['nbOfNotifications'] = $nbOfNotifications;
+        $data = array();
+        $notifications = $this->notificationRepository->findNonReadNotificationsByUser($id);
+        $nbOfNonReadNotifications = count($notifications);
+
+        $data['nbOfNonReadNotifications'] = $nbOfNonReadNotifications;
 
         return new JsonResponse($data);
-//        return $this->render('base.html.twig');
     }
 
     /**
@@ -53,28 +66,21 @@ class NotificationController extends AbstractController
      */
     public function displayNotifications($id) : Response
     {
-        $arrayId = array();
+
         $user = $this->userRepository->find($id);
         $notifications = $user->getNotifications();
-        foreach ($notifications as $notification)
-        {
-            $activityId = $notification->getActivity()->getId();
-            array_push($arrayId, $activityId);
-            $result = array_unique($arrayId);
-        }
 
-        $activities = array();
-        for($i=0; $i<count($result); $i++)
+        foreach($notifications as $notification)
         {
-            $activity = $this->activityRepository->find($result[$i]);
-            array_push($activities , $activity);
-        }
+            $notification->setReadByUser(true);
+            $this->em->flush();
+            ($notification->getActivity()) ? $activityId = $notification->getActivity()->getId() : $activityId = 0;
 
-        return $this->render('notifications.html.twig', [
-           'activities' => $activities,
-            'userIdWhoAskDisplay' => $id
+            $datas[$activityId][] = $notification;
+
+        }
+        return $this->render('notifications.html.twig' , [
+            'notifications' => $datas
         ]);
-
-//        return $this->render('base.html.twig');
     }
 }

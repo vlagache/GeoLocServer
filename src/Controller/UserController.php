@@ -41,11 +41,6 @@ class UserController extends AbstractController
      */
     public function connexion(Request $request, UserPasswordEncoderInterface $encoder ): Response
     {
-//        $request = Request::create(
-//            '/inscription',
-//            'POST',
-//            ['mail' => 'admin@gmail.com' , 'password' => 'admin']
-//        );
         $data = array();
         $mail = $request->request->get('mail');
         $password = $request->request->get('password');
@@ -81,12 +76,6 @@ class UserController extends AbstractController
      */
     public function inscription(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
-//        $request = Request::create(
-//            '/inscription',
-//            'POST',
-//            ['name' => 'Vincent' , 'mail' => 'xxx@gmail.com' , 'password' => 'test']
-//        );
-
         $name = $request->request->get('name');
         $mail = $request->request->get('mail');
         $password = $request->request->get('password');

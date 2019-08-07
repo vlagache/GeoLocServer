@@ -18,12 +18,14 @@ class SendNotification
     private $em;
     private $message;
     private $body;
+    private $activityNull;
 
     public function __construct(ObjectManager $em)
     {
         $this->em = $em;
         $this->message = '';
         $this->body = '';
+        $this->activityNull = false;
     }
 
     private $user;
@@ -39,6 +41,13 @@ class SendNotification
     public function setActivity(Activity $activity)
     {
         $this->activity = $activity;
+    }
+
+
+
+    public function setActivityNull()
+    {
+        $this->activityNull = true;
     }
 
     /**
@@ -92,12 +101,15 @@ class SendNotification
                 $success = 'Successful sends: '.$report->successes()->count().PHP_EOL;
 
 
+
                 if ( $this->activity == null )
                 {
                     $activity = $this->user->getActivity();
                 } else {
                     $activity = $this->activity;
                 }
+
+                if($this->activityNull == true) $activity = null ;
 
                 $users = $this->getUsers();
                 foreach ($users as $user)
@@ -107,7 +119,8 @@ class SendNotification
                     $notification->setActivity($activity) // Activité  a laquelle est lié la notification
                         ->setUser($user) // User a qui on a envoyé la notification
                         ->setDate(new DateTime())
-                        ->setMessage($this->body); // contenu du message.
+                        ->setMessage($this->body) // contenu du message.
+                        ->setReadByUser(false);
                         $this->em->persist($notification);
                         $this->em->flush();
                 }
@@ -143,41 +156,4 @@ class SendNotification
             ->withNotification(FirebaseNotification::create('Notification GeoLocApp', ''.$this->body.''));
         return $this->body;
     }
-
-//    public function setMessageActivityStart()
-//    {
-//        $this->message = CloudMessage::new()
-//            ->withNotification(FirebaseNotification::create('Notification GeoLocApp', 'Votre ami ' . $this->user->getName()
-//                . ' a démarré une activité !'));
-//    }
-//
-//    public function setMessageActivityPause()
-//    {
-//        $this->message = CloudMessage::new()
-//            ->withNotification(FirebaseNotification::create('Notification GeoLocApp', 'Votre ami ' . $this->user->getName() . ' a mis en pause son activité !'));
-//    }
-//
-//    public function setMessageActivityRestart()
-//    {
-//        $this->message = CloudMessage::new()
-//            ->withNotification(FirebaseNotification::create('Notification GeoLocApp', 'Votre ami ' . $this->user->getName() . ' a relancé son activité !'));
-//    }
-//
-//    public function setMessageActivityEnd()
-//    {
-//        $this->message = CloudMessage::new()
-//            ->withNotification(FirebaseNotification::create('Notification GeoLocApp', 'Votre ami ' . $this->user->getName() . ' a arreté son activité !'));
-//    }
-//
-//    public function setMessageActivityAlert()
-//    {
-//        $this->message = CloudMessage::new()
-//            ->withNotification(FirebaseNotification::create('Notification GeoLocApp', 'Votre ami ' . $this->user->getName() . ' est immobile !'));
-//    }
-//
-//    public function setMessageActivityMove()
-//    {
-//        $this->message = CloudMessage::new()
-//            ->withNotification(FirebaseNotification::create('Notification GeoLocApp', 'Votre ami ' . $this->user->getName() . ' bouge !'));
-//    }
 }

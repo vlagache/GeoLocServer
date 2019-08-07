@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Notification;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -18,6 +19,21 @@ class NotificationRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Notification::class);
     }
+
+    /**
+     * @param $idUser
+     * @return QueryBuilder
+     */
+    public function findNonReadNotificationsByUser($idUser)
+    {
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.read_by_user = false')
+            ->andWhere('n.user = :user_id')
+            ->setParameter('user_id', $idUser)
+            ->getQuery()
+            ->getResult();
+    }
+
 
     // /**
     //  * @return Notification[] Returns an array of Notification objects

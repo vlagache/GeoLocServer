@@ -102,7 +102,6 @@ class ActivityController extends AbstractController
             }
         }
         return new JsonResponse($data);
-//        return $this->render('base.html.twig');
     }
 
     /**
@@ -122,7 +121,9 @@ class ActivityController extends AbstractController
             if($activity)
             {
                 $notification->setUser($user);
+                $notification->setActivityNull();
                 $notification->setMessage('end');
+
                 $report = $notification->sendNotification();
 
                 $this->em->remove($activity);
@@ -134,7 +135,6 @@ class ActivityController extends AbstractController
             }
         }
         return new JsonResponse($data);
-//        return $this->render('base.html.twig');
     }
 
     /**
