@@ -59,11 +59,22 @@ class User implements UserInterface
      */
     private $inscription_date;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Alert", mappedBy="user", orphanRemoval=true)
+     */
+    private $alerts;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $api_token;
+
 
     public function __construct()
     {
         $this->teams = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->alerts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -260,6 +271,49 @@ class User implements UserInterface
     public function setInscriptionDate(\DateTimeInterface $inscription_date): self
     {
         $this->inscription_date = $inscription_date;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Alert[]
+     */
+    public function getAlerts(): Collection
+    {
+        return $this->alerts;
+    }
+
+    public function addAlert(Alert $alert): self
+    {
+        if (!$this->alerts->contains($alert)) {
+            $this->alerts[] = $alert;
+            $alert->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAlert(Alert $alert): self
+    {
+        if ($this->alerts->contains($alert)) {
+            $this->alerts->removeElement($alert);
+            // set the owning side to null (unless already changed)
+            if ($alert->getUser() === $this) {
+                $alert->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getApiToken(): ?string
+    {
+        return $this->api_token;
+    }
+
+    public function setApiToken(string $api_token): self
+    {
+        $this->api_token = $api_token;
 
         return $this;
     }

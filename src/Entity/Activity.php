@@ -49,10 +49,16 @@ class Activity
      */
     private $notifications;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Alert", mappedBy="activity", orphanRemoval=true )
+     */
+    private $alerts;
+
     public function __construct()
     {
         $this->positions = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->alerts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,6 +170,37 @@ class Activity
             // set the owning side to null (unless already changed)
             if ($notification->getActivity() === $this) {
                 $notification->setActivity(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Alert[]
+     */
+    public function getAlerts(): Collection
+    {
+        return $this->alerts;
+    }
+
+    public function addAlert(Alert $alert): self
+    {
+        if (!$this->alerts->contains($alert)) {
+            $this->alerts[] = $alert;
+            $alert->setActivity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAlert(Alert $alert): self
+    {
+        if ($this->alerts->contains($alert)) {
+            $this->alerts->removeElement($alert);
+            // set the owning side to null (unless already changed)
+            if ($alert->getActivity() === $this) {
+                $alert->setActivity(null);
             }
         }
 

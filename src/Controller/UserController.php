@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\DistanceBetweenTwoPoints;
 use DateTime;
 use App\Repository\UserRepository;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -58,6 +59,7 @@ class UserController extends AbstractController
                     $data['result'] = 'Success';
                     $data['name'] = $user->getName();
                     $data['userId'] = $user->getId();
+                    // $data['tokenApi'] = blabla;
                 } else  // Password incorrect
                 {
                     $data['result'] = 'WrongPassword';
@@ -93,7 +95,8 @@ class UserController extends AbstractController
                 $user->setName($name)
                     ->setPassword($encoded)
                     ->setInscriptionDate(new DateTime())
-                    ->setMail($mail);
+                    ->setMail($mail)
+                    ->setApiToken("BLABLA");
                 $this->em->persist($user);
                 $this->em->flush();
                 $data['result'] = 'Success';
@@ -180,7 +183,7 @@ class UserController extends AbstractController
 
     /**
      * @Route("/account/delete/{id}")
-     * @param $id
+     * @param $id User
      * @return Response
      */
     public function deleteAccount($id) : Response
@@ -194,5 +197,57 @@ class UserController extends AbstractController
             $data['result'] = 'accountDelete';
         }
         return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/test/{id}")
+     * @param $id User
+     * @return Response
+     * @throws \Exception
+     */
+    public function test($id): Response
+    {
+        $user = $this->repository->find($id);
+        date_default_timezone_set('Europe/Paris');
+        $now = new DateTime();
+        $time =  $now->format('H:i:s');
+        $string = $user->getName() . $user->getMail() . $time;
+        $apiKey = password_hash($string,PASSWORD_DEFAULT);
+        $user->setApiToken($apiKey);
+        $this->em->flush();
+
+        dump($apiKey);
+        dump($string);
+        return $this->render('base.html.twig');
+    }
+
+    /**
+     * @Route("/{token}/test/{id}")
+     * @param $id
+     * @param $token
+     * @return Response
+     */
+    public function testToken($id, $token): Response
+    {
+        $user = $this->repository->find($id);
+        if (password_verify($token, $user->getApiToken()))
+        {
+            return new Response("Accés autorisé");
+        } else
+        {
+            return new Response("Mauvaise clé");
+        }
+    }
+
+    /**
+     * @Route("/distance")
+     * @param DistanceBetweenTwoPoints $distance
+     * @return Response
+     */
+    public function testCalcul(DistanceBetweenTwoPoints $distance) :Response
+    {
+        $result = $distance->distanceBetweenTwoPoints();
+        dump($result);
+        return $this->render('base.html.twig');
     }
 }

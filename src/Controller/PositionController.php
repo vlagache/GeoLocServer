@@ -81,7 +81,7 @@ class PositionController extends AbstractController
                 // Envoi d'une notification , mais les positions continuent d'etre sauvegardés...
                 // Envoyer des notifs et continuer à envoyer les positions
 
-                $checkActivity->setActivity($activity);
+                $checkActivity->setActivity($activity); // Activité à check
                 if($checkActivity->isValid()) {
                     $data['result'] = 'PositionSave';
                     $notification->setUser($user);
@@ -90,6 +90,7 @@ class PositionController extends AbstractController
                 } else {
                     $notification->setUser($user);
                     $notification->setMessage('immobile');
+                    $checkActivity->createAlert();
                     $report = $notification->sendNotification();
                     $data['result'] = 'Errors';
                 }
