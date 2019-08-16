@@ -33,6 +33,7 @@ class UserFixtures extends Fixture
             $user->setName($faker->firstName())
                 ->setPassword($encoded)
                 ->setMail($faker->freeEmail)
+                ->setApiToken('BLABLA')
                 ->setInscriptionDate(new DateTime());
             $manager->persist($user);
             $manager->flush();

@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Service\ReverseGeocoding;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,15 +18,9 @@ class AlertController extends AbstractController
      */
     private $userRepository;
 
-    /**
-     * @var ReverseGeocoding
-     */
-    private $reverseGeocoding;
-
-    public function __construct(UserRepository $userRepository, ReverseGeocoding $reverseGeocoding)
+    public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
-        $this->reverseGeocoding = $reverseGeocoding;
     }
     /**
      * @Route("/alert/number/{id}")
@@ -51,21 +44,14 @@ class AlertController extends AbstractController
      */
     public function displayAlerts($id) :Response
     {
-        $reverseGeocoding = $this->reverseGeocoding;
         $user = $this->userRepository->find($id);
         $alerts = $user->getAlerts();
-
-
         foreach ($alerts as $alert)
         {
-            $reverseGeocoding->setAlert($alert);
-            $location = $reverseGeocoding->reverseGeocoding();
-
-            $array_alert = array('datetime' => $alert->getDate()->format('d/m/Y'. ' à ' .'H:i:s'), 'location' =>
-                $location, 'latitude' => $alert->getLat() , 'longitude' => $alert->getLng());
-            $datas[$alert->getActivity()->getUser()->getName()][] = $array_alert;
+            $datas[$alert->getActivity()->getUser()->getName()][] = $alert;
         }
-        return new JsonResponse($datas);
-//        return $this->render('base.html.twig');
+        return $this->render('alerts.html.twig',[
+           'alerts' => $datas
+        ]);
     }
 }

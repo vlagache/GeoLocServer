@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\CheckActivity;
 use App\Service\DistanceBetweenTwoPoints;
 use DateTime;
 use App\Repository\UserRepository;

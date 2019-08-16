@@ -1,0 +1,16 @@
+<div id="listAlerts">
+    {% for nameOfUser,alertsByUser in alerts %}
+    <div class="activityOf"> {{ nameOfUser }} </div>
+
+    <div class="alertContent">
+{#        Contenu de toutes les alertes #}
+        {% for alert in alertsByUser%}
+        <p class="alert">
+            Date : {{ alert.date|date('d/m/y') }} à {{ alert.date|date('H:i:s') }} </br>
+            Addresse : {{ alert.address }} </br>
+            Coordoonnées GPS : {{ alert.lat }} [ Latitude] / {{ alert.lng }} [ Longitude ]
+        </p>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>

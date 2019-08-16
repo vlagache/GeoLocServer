@@ -4,23 +4,25 @@
 namespace App\Service;
 
 
-use App\Entity\Alert;
+
+use App\Entity\Position;
 
 class ReverseGeocoding
 {
-    /**
-     * @var Alert
-     */
-    private $alert;
 
-    public function setAlert(Alert $alert)
+    /**
+     * @var Position
+     */
+    private $position;
+
+    public function setPosition(Position $position)
     {
-        $this->alert = $alert;
+        $this->position = $position;
     }
     public function reverseGeocoding()
     {
-        $lat = $this->alert->getLat();
-        $lng = $this->alert->getLng();
+        $lat = $this->position->getLat();
+        $lng = $this->position->getLng();
 
 //        $lat = 44.7715059;
 //        $lng = -0.5842729;
