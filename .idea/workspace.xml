@@ -2,17 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="57f3183e-8e6a-43f0-83ee-7eecdd56a9cc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/templates/alerts.html.twig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Security/TokenAuthenticator.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Service/ApiKeyGenerator.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/nelmio_cors.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/nelmio_cors.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ActivityController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ActivityController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/AlertController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/AlertController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/DeviceController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/DeviceController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/PositionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PositionController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/TeamController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TeamController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DataFixtures/UserFixtures.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataFixtures/UserFixtures.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Alert.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Alert.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Migrations/Version20190730172944.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Migrations/Version20190816074442.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/CheckActivity.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/CheckActivity.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/DistanceBetweenTwoPoints.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/DistanceBetweenTwoPoints.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/ReverseGeocoding.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/ReverseGeocoding.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/SendNotification.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/SendNotification.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,12 +28,6 @@
     <execution>
       <executable />
     </execution>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>user_id_id</find>
-      <find>count</find>
-    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />

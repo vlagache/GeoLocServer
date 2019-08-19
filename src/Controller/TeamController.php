@@ -8,6 +8,7 @@ use App\Entity\Team;
 use App\Entity\User;
 use App\Repository\TeamRepository;
 use App\Repository\UserRepository;
+use App\Service\ApiToken;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,46 +47,33 @@ class TeamController extends AbstractController
      */
     public function createTeam($id, Request $request) : Response
     {
-//        $request = Request::create(
-//            '/team/create/{id}',
-//            'POST',
-//            ['nameTeam' => 'Team test']
-//
-//        );
         $data = array();
         $nameTeam = $request->request->get('nameTeam');
         $nameTeamFormat = strtoupper(str_replace(' ', '', $nameTeam));
         $user = $this->userRepository->find($id);
-
-        $teams = $user->getTeams()->toArray();
-
-        for($i=0; $i<count($teams); $i++)
+        if($user)
         {
-            if($nameTeamFormat == strtoupper(str_replace(' ', '',$teams[$i]->getName())))
-            {
-                $data['result'] = 'AlreadyTeamWithSameName';
-            }
-        }
+                $teams = $user->getTeams()->toArray();
 
-        if(!$data)
-        {
-            $team = new Team();
-            $team->setName($nameTeam);
-            $this->em->persist($team);
-            $team->addUser($user);
-            $this->em->flush();
-            $data['result'] = 'newTeamCreate';
-        }
+                for($i=0; $i<count($teams); $i++)
+                {
+                    if($nameTeamFormat == strtoupper(str_replace(' ', '',$teams[$i]->getName())))
+                    {
+                        $data['result'] = 'AlreadyTeamWithSameName';
+                    }
+                }
 
+                if(!$data) {
+                    $team = new Team();
+                    $team->setName($nameTeam);
+                    $this->em->persist($team);
+                    $team->addUser($user);
+                    $this->em->flush();
+                    $data['result'] = 'newTeamCreate';
+                }
+        }
         return new JsonResponse($data);
-//        return $this->render('base.html.twig');
-
     }
-    public function deleteTeam()
-    {
-
-    }
-
     /**
      * @Route("/team/{id}/adduser")
      * @param $id Team
@@ -95,12 +83,6 @@ class TeamController extends AbstractController
      */
     public function addUserInATeam($id, Request $request) : Response
     {
-//        $request = Request::create(
-//            '/team/{id}/adduser',
-//            'POST',
-//            ['mail' => 'michel.aimee@live.com']
-//
-//        );
         $data = array();
         $mail = $request->request->get('mail');
         $idUserWhoAddFriend = $request->request->get('invitFrom');
@@ -140,8 +122,6 @@ class TeamController extends AbstractController
             $data['result'] = 'unknownTeam';
         }
         return new JsonResponse($data);
-//        return $this->render('base.html.twig');
-
     }
 
     /**
@@ -152,12 +132,6 @@ class TeamController extends AbstractController
      */
     public function removeUserInTeam($id , Request $request)
     {
-//        $request = Request::create(
-//            '/team/{id}/adduser',
-//            'POST',
-//            ['idUser' => '1']
-//
-//        );
         $data = array();
         $idUser = $request->request->get('idUser');
         $team = $this->teamRepository->find($id);
@@ -183,13 +157,11 @@ class TeamController extends AbstractController
                 }
             }
         }
-
         return new JsonResponse($data);
-//        return $this->render('base.html.twig');
     }
 
     /**
-     * @Route("/team/{id}", name="display.team")
+     * @Route("/team/{id}")
      * @param $id User
      * @return Response
      */

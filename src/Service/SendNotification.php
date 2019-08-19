@@ -96,9 +96,9 @@ class SendNotification
                 $messaging = $firebase->getMessaging();
                 $deviceTokens = $this->getTokens();
 
-                $report = $messaging->sendMulticast($this->message, $deviceTokens);
+                $messaging->sendMulticast($this->message, $deviceTokens);
 
-                $success = 'Successful sends: '.$report->successes()->count().PHP_EOL;
+//                $success = 'Successful sends: '.$report->successes()->count().PHP_EOL;
 
 
 
@@ -125,7 +125,7 @@ class SendNotification
                         $this->em->flush();
                 }
 
-                return $success;
+//                return $success;
 
     }
     public function setMessage($stateOfActivity)

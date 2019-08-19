@@ -87,7 +87,7 @@ class PositionController extends AbstractController
                     $notification->setUser($user);
                     $notification->setMessage('immobile');
                     $checkActivity->createAlert();
-                    $report = $notification->sendNotification();
+                    $notification->sendNotification();
                     $data['result'] = 'Errors';
                 } else {
                     $data['result'] = 'PositionSave';

@@ -18,6 +18,11 @@ security:
         main:
             anonymous: true
 
+            guard:
+              authenticators:
+                - App\Security\TokenAuthenticator
+
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
@@ -28,4 +33,11 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/activity, roles: ROLE_USER }
+         - { path: ^/alert, roles: ROLE_USER }
+         - { path: ^/device, roles: ROLE_USER }
+         - { path: ^/notification, roles: ROLE_USER }
+         - { path: ^/position, roles: ROLE_USER }
+         - { path: ^/team, roles: ROLE_USER }
+         - { path: ^/account, roles: ROLE_USER }
+

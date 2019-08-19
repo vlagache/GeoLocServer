@@ -84,7 +84,7 @@ class ActivityController extends AbstractController
                     $notification->setUser($user);
                     $notification->setActivity($activity);
                     $notification->setMessage('start');
-                    $report = $notification->sendNotification();
+                    $notification->sendNotification();
 
                 } else if(!$activityCanStart){
                     $data['result'] = 'noFriendInYourTeam';
@@ -95,7 +95,7 @@ class ActivityController extends AbstractController
 
                     $notification->setUser($user);
                     $notification->setMessage('restart');
-                    $report = $notification->sendNotification();
+                    $notification->sendNotification();
                 } else {
                     $data['result'] = 'activityExist';
                 }
@@ -124,7 +124,7 @@ class ActivityController extends AbstractController
                 $notification->setActivityNull();
                 $notification->setMessage('end');
 
-                $report = $notification->sendNotification();
+                $notification->sendNotification();
 
                 $this->em->remove($activity);
                 $this->em->flush();
@@ -161,7 +161,7 @@ class ActivityController extends AbstractController
 
                 $notification->setUser($user);
                 $notification->setMessage('pause');
-                $report = $notification->sendNotification();
+                $notification->sendNotification();
             }
         }
         return new JsonResponse($data);

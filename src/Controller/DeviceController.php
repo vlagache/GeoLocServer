@@ -38,12 +38,6 @@ class DeviceController extends AbstractController
      */
     public function newDevice($id, Request $request) :Response
     {
-//        $request = Request::create(
-//            '/device/{id}',
-//            'POST',
-//            ['token' => 'feFhXL1nC5Y:APA91bFokcDq0Dcc5FAWlRLl-4piIdWwkQcvPOaIfRR-SLfmTuWPTlAVq715UYO271XkveHBOriOnLKr0Z8Dp_uSDrnrWFKv3esrRBDgMQsny9ENgny-hYtpFd2kZXlQqKlggOolBx1I']
-//
-//        );
         $data = array();
         $token = $request->request->get('token');
         $user = $this->repository->find($id);
@@ -57,7 +51,6 @@ class DeviceController extends AbstractController
             $data['result'] = 'DeviceSave';
         }
         return new JsonResponse($data);
-//        return $this->render('base.html.twig');
     }
 
     /**
@@ -69,12 +62,6 @@ class DeviceController extends AbstractController
      */
     public function checkDeviceAfterReinstall($id, Request $request) :Response
     {
-//        $request = Request::create(
-//            '/device/checktoken/{id}',
-//            'POST',
-//            ['token' => 'TATA']
-//
-//        );
         $data = array();
         $token = $request->request->get('token');
         $user = $this->repository->find($id);
@@ -90,6 +77,5 @@ class DeviceController extends AbstractController
             }
         }
         return new JsonResponse($data);
-//        return $this->render('base.html.twig');
     }
 }

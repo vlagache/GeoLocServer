@@ -3,8 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Service\CheckActivity;
-use App\Service\DistanceBetweenTwoPoints;
+use App\Service\ApiKeyGenerator;
 use DateTime;
 use App\Repository\UserRepository;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -27,11 +26,16 @@ class UserController extends AbstractController
      * @var ObjectManager
      */
     private $em;
+    /**
+     * @var ApiKeyGenerator
+     */
+    private $apiKeyGenerator;
 
-    public function __construct(UserRepository $repository, ObjectManager $em)
+    public function __construct(UserRepository $repository, ObjectManager $em, ApiKeyGenerator $apiKeyGenerator)
     {
         $this->repository = $repository;
         $this->em = $em;
+        $this->apiKeyGenerator = $apiKeyGenerator;
     }
 
     /**
@@ -60,7 +64,7 @@ class UserController extends AbstractController
                     $data['result'] = 'Success';
                     $data['name'] = $user->getName();
                     $data['userId'] = $user->getId();
-                    // $data['tokenApi'] = blabla;
+                    $data['apiToken'] = $user->getApiToken();
                 } else  // Password incorrect
                 {
                     $data['result'] = 'WrongPassword';
@@ -93,15 +97,18 @@ class UserController extends AbstractController
                 date_default_timezone_set('Europe/Paris');
                 $user = new User();
                 $encoded = $encoder->encodePassword($user, $password);
+                $apiToken = $this->apiKeyGenerator->generateApiKey();
+
                 $user->setName($name)
                     ->setPassword($encoded)
                     ->setInscriptionDate(new DateTime())
                     ->setMail($mail)
-                    ->setApiToken("BLABLA");
+                    ->setApiToken($apiToken);
                 $this->em->persist($user);
                 $this->em->flush();
                 $data['result'] = 'Success';
                 $data['userId'] = $user->getId();
+                $data['apiToken'] = $user->getApiToken();
             } else {
                 $data['result'] = 'WrongMail';
             }
@@ -199,56 +206,14 @@ class UserController extends AbstractController
         }
         return new JsonResponse($data);
     }
-
     /**
-     * @Route("/test/{id}")
-     * @param $id User
-     * @return Response
-     * @throws \Exception
-     */
-    public function test($id): Response
-    {
-        $user = $this->repository->find($id);
-        date_default_timezone_set('Europe/Paris');
-        $now = new DateTime();
-        $time =  $now->format('H:i:s');
-        $string = $user->getName() . $user->getMail() . $time;
-        $apiKey = password_hash($string,PASSWORD_DEFAULT);
-        $user->setApiToken($apiKey);
-        $this->em->flush();
-
-        dump($apiKey);
-        dump($string);
-        return $this->render('base.html.twig');
-    }
-
-    /**
-     * @Route("/{token}/test/{id}")
-     * @param $id
-     * @param $token
+     * @Route("/header")
      * @return Response
      */
-    public function testToken($id, $token): Response
+    public function header() :Response
     {
-        $user = $this->repository->find($id);
-        if (password_verify($token, $user->getApiToken()))
-        {
-            return new Response("Accés autorisé");
-        } else
-        {
-            return new Response("Mauvaise clé");
-        }
-    }
-
-    /**
-     * @Route("/distance")
-     * @param DistanceBetweenTwoPoints $distance
-     * @return Response
-     */
-    public function testCalcul(DistanceBetweenTwoPoints $distance) :Response
-    {
-        $result = $distance->distanceBetweenTwoPoints();
-        dump($result);
-        return $this->render('base.html.twig');
+       $data=array();
+       $data['result'] = "Eureka";
+       return new JsonResponse($data);
     }
 }

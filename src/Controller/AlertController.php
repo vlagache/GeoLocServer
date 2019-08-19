@@ -44,6 +44,7 @@ class AlertController extends AbstractController
      */
     public function displayAlerts($id) :Response
     {
+        $datas = array();
         $user = $this->userRepository->find($id);
         $alerts = $user->getAlerts();
         foreach ($alerts as $alert)
