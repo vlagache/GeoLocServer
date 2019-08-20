@@ -206,14 +206,13 @@ class UserController extends AbstractController
         }
         return new JsonResponse($data);
     }
-    /**
-     * @Route("/header")
-     * @return Response
-     */
-    public function header() :Response
-    {
-       $data=array();
-       $data['result'] = "Eureka";
-       return new JsonResponse($data);
-    }
+//    /**
+//     * @Route("/server")
+//     * @return Response
+//     */
+//    public function server() :Response
+//    {
+//        echo '<pre>' , var_dump($_SERVER) , '</pre>';
+//        return $this->render('base.html.twig');
+//    }
 }

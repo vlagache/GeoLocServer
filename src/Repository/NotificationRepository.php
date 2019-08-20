@@ -34,6 +34,17 @@ class NotificationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return mixed
+     */
+    public function findNotificationsWithNullActivity()
+    {
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.activity is NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
 
     // /**
     //  * @return Notification[] Returns an array of Notification objects

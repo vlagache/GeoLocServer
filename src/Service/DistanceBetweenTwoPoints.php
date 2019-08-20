@@ -34,12 +34,6 @@ class DistanceBetweenTwoPoints
         $lat2 = $this->position2->getLat();
         $lng2 = $this->position2->getLng();
 
-//        $lat1 = 44.7715184;
-//        $lng1 = -0.5841842;
-//
-//        $lat2 = 44.7714861;
-//        $lng2 = -0.5842502;
-
         $earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
         $rlo1 = deg2rad($lng1);
         $rla1 = deg2rad($lat1);
@@ -56,7 +50,3 @@ class DistanceBetweenTwoPoints
 
     }
 }
-
-
-//44.771487, -0.584301 => Maison
-//44.772249, -0.584643 => Bout de la rue;
