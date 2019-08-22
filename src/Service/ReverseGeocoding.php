@@ -24,11 +24,6 @@ class ReverseGeocoding
         $lat = $this->position->getLat();
         $lng = $this->position->getLng();
 
-//        $lat = 44.7715059;
-//        $lng = -0.5842729;
-
-
-
         $config = parse_ini_file("../config.ini");
         $apiKey = $config['apiKeyGoogle'];
 

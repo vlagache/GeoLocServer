@@ -98,10 +98,6 @@ class SendNotification
 
                 $messaging->sendMulticast($this->message, $deviceTokens);
 
-//                $success = 'Successful sends: '.$report->successes()->count().PHP_EOL;
-
-
-
                 if ( $this->activity == null )
                 {
                     $activity = $this->user->getActivity();
@@ -116,17 +112,14 @@ class SendNotification
                 {
                     date_default_timezone_set('Europe/Paris');
                     $notification = new Notification();
-                    $notification->setActivity($activity) // Activité  a laquelle est lié la notification
-                        ->setUser($user) // User a qui on a envoyé la notification
+                    $notification->setActivity($activity) 
+                        ->setUser($user) 
                         ->setDate(new DateTime())
-                        ->setMessage($this->body) // contenu du message.
+                        ->setMessage($this->body)
                         ->setReadByUser(false);
                         $this->em->persist($notification);
                         $this->em->flush();
                 }
-
-//                return $success;
-
     }
     public function setMessage($stateOfActivity)
     {

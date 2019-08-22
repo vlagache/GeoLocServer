@@ -8,7 +8,6 @@ use App\Entity\Team;
 use App\Entity\User;
 use App\Repository\TeamRepository;
 use App\Repository\UserRepository;
-use App\Service\ApiToken;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -87,15 +86,15 @@ class TeamController extends AbstractController
         $mail = $request->request->get('mail');
         $idUserWhoAddFriend = $request->request->get('invitFrom');
         $team = $this->teamRepository->find($id);
-        $user = $this->userRepository->findUserByMail($mail); // Utilisateur à ajouter en ami
-        $userWhoAddFriend = $this->userRepository->find($idUserWhoAddFriend); // Utilisateur qui veut ajouter un ami
+        $user = $this->userRepository->findUserByMail($mail);
+        $userWhoAddFriend = $this->userRepository->find($idUserWhoAddFriend);
 
         if($team)
         {
-            if($user) // Utilisateur inscrit
+            if($user)
             {
-                $teams = $user->getTeams()->toArray(); // Array d'objet Team avec toutes les teams de l'utilisateur
-                if(in_array($team, $teams)) // Est ce que l'utilisateur fait deja partie de la team ou on veut l'ajouter ?
+                $teams = $user->getTeams()->toArray();
+                if(in_array($team, $teams))
                 {
                     $data['result'] = 'userAlreadyInTeam';
                 } else{
@@ -141,7 +140,7 @@ class TeamController extends AbstractController
         {
             if($user)
             {
-                $teams = $user->getTeams()->toArray(); // Array d'objet Team avec toutes les teams de l'utilisateur
+                $teams = $user->getTeams()->toArray();
                 if(in_array($team, $teams))
                 {
                     $team->removeUser($user);
@@ -165,11 +164,11 @@ class TeamController extends AbstractController
      * @param $id User
      * @return Response
      */
-    public function verifyIfYouHaveATeam($id) : Response
+    public function displayTeams($id) : Response
     {
         $user = $this->userRepository->find($id);
         if ($user) {
-            $teams = $user->getTeams(); // Array d'objet Team avec toutes les teams de l'utilisateur
+            $teams = $user->getTeams();
             return $this->render('teamstable.html.twig', [
                 'teams' => $teams,
                 'userIdWhoAskDisplay' => $id

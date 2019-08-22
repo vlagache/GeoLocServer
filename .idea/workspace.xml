@@ -2,11 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="57f3183e-8e6a-43f0-83ee-7eecdd56a9cc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Controller/CronController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/swagger/swagger.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/GeoLocServer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/GeoLocServer.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/NotificationRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/NotificationRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/DistanceBetweenTwoPoints.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/DistanceBetweenTwoPoints.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PositionController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PositionController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/TeamController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/TeamController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/ReverseGeocoding.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/ReverseGeocoding.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/SendNotification.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/SendNotification.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -159,6 +167,7 @@
       <path value="$PROJECT_DIR$/vendor/firebase/php-jwt" />
       <path value="$PROJECT_DIR$/vendor/giggsey/locale" />
       <path value="$PROJECT_DIR$/vendor/giggsey/libphonenumber-for-php" />
+      <path value="$PROJECT_DIR$/vendor/zircote/swagger-php" />
     </include_path>
   </component>
   <component name="ProjectId" id="1OVHnOIqku1OFI6F7naNOHXojuq" />
@@ -231,6 +240,8 @@
       <workItem from="1565189218296" duration="4573000" />
       <workItem from="1565937714468" duration="9106000" />
       <workItem from="1566290047838" duration="8792000" />
+      <workItem from="1566316097094" duration="1092000" />
+      <workItem from="1566363648580" duration="13764000" />
     </task>
     <servers />
   </component>

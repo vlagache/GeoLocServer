@@ -62,7 +62,7 @@ class PositionController extends AbstractController
 
 
         $user = $this->repository->find($id);
-        if($user) // La position est est envoyé par un utilisateur qui existe.
+        if($user)
         {
             $activity = $user->getActivity();
             $checkActivity = $this->checkActivity;
@@ -77,10 +77,6 @@ class PositionController extends AbstractController
                 $this->em->persist($position);
                 $this->em->flush();
 
-                // QU'est ce qu'il se passe quand l'utilisateur est immobile ?
-                // Envoi d'une notification , mais les positions continuent d'etre sauvegardés...
-                // Envoyer des notifs et continuer à envoyer les positions
-
                 $checkActivity->setActivity($activity); // Activité à check
                 if(!$checkActivity->isValid())
                 {
@@ -91,13 +87,9 @@ class PositionController extends AbstractController
                     $data['result'] = 'Errors';
                 } else {
                     $data['result'] = 'PositionSave';
-//                    $notification->setUser($user);
-//                    $notification->setMessage('move');
-//                    $report = $notification->sendNotification();
                 }
             }
         }
         return new JsonResponse($data);
-//        return $this->render('base.html.twig');
     }
 }
